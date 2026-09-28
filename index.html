@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A client-side PDF reviewer and mock exam study hub.">
+  <title>PDF Study Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span class="brand-mark">✦</span><span>PDF Study Hub</span></div>
+      <p class="sidebar-note">Turn any text-based PDF into a focused study session.</p>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-view="dashboard"><span>⌂</span> Dashboard</button>
+        <button class="nav-item" data-view="reviewer"><span>▤</span> Reviewer</button>
+        <button class="nav-item" data-view="exam"><span>✓</span> Mock Exam</button>
+        <button class="nav-item" data-view="results"><span>◉</span> Results</button>
+        <button class="nav-item" data-view="downloads"><span>⇩</span> Downloads</button>
+        <button class="nav-item" data-view="settings"><span>⚙</span> Settings</button>
+      </nav>
+      <div class="sidebar-footer"><span class="status-dot"></span> Runs locally in your browser</div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="icon-button menu-button" id="menuButton" aria-label="Open menu">☰</button>
+        <div><p class="eyebrow">YOUR PRIVATE STUDY SPACE</p><h1 id="pageTitle">Dashboard</h1></div>
+        <div class="top-actions"><button class="icon-button" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">☾</button><span class="avatar">S</span></div>
+      </header>
+
+      <div id="toast" class="toast" role="status"></div>
+
+      <section class="view active" id="dashboardView">
+        <div class="hero-grid">
+          <div class="hero-card">
+            <div class="hero-copy"><p class="eyebrow accent">READY WHEN YOU ARE</p><h2>Study smarter.<br><em>Know your material.</em></h2><p class="hero-text">Upload a PDF and create a structured reviewer and practice exam from its contents — without sending your file anywhere.</p></div>
+            <div class="hero-orbit"><div class="orbit-ring"></div><div class="orbit-card card-one">▤<small>Reviewer</small></div><div class="orbit-card card-two">✓<small>Mock exam</small></div><div class="orbit-core">✦</div></div>
+          </div>
+          <div class="stats-card"><div class="section-heading"><div><p class="eyebrow">CURRENT DOCUMENT</p><h3 id="documentTitle">No PDF loaded</h3></div><span class="file-icon">PDF</span></div><div class="doc-stats"><div><strong id="pageCount">—</strong><span>Pages</span></div><div><strong id="wordCount">—</strong><span>Words</span></div><div><strong id="topicCount">—</strong><span>Topics</span></div></div><div class="mini-progress"><span id="dashboardProgress"></span></div><p class="muted" id="dashboardStatus">Upload a text-based PDF to begin.</p></div>
+        </div>
+
+        <div class="upload-card" id="dropZone"><div class="upload-icon">↑</div><div><h3>Upload your PDF reviewer</h3><p>Drag and drop here, or choose a file from your device.<br><span class="muted">Your document stays in this browser.</span></p></div><button class="primary-button" id="chooseFile">Choose PDF</button><input type="file" id="pdfInput" accept="application/pdf" hidden></div>
+        <div class="selected-file hidden" id="selectedFile"><span class="file-icon">PDF</span><div><strong id="fileName">filename.pdf</strong><small id="fileSize">0 KB</small></div><button class="text-button" id="removeFile">Remove</button></div>
+        <div class="action-row"><button class="primary-button" id="analyzeButton" disabled>Analyze PDF <span>→</span></button><button class="secondary-button" data-view-target="reviewer" id="startReview" disabled>Start Review</button><button class="secondary-button" data-view-target="exam" id="generateExam" disabled>Generate Mock Exam</button></div>
+        <div class="processing-card hidden" id="processingCard"><div class="spinner"></div><div><strong id="processingLabel">Analyzing PDF...</strong><div class="progress-track"><span id="processingProgress"></span></div></div><span id="processingPercent">0%</span></div>
+        <div class="feature-grid"><article><span class="feature-number">01</span><h3>Extract</h3><p>Read selectable text in your PDF directly in the browser with PDF.js.</p></article><article><span class="feature-number">02</span><h3>Organize</h3><p>Turn headings, definitions, lists, dates, and key sentences into a study guide.</p></article><article><span class="feature-number">03</span><h3>Practice</h3><p>Build deterministic multiple-choice questions using only extracted content.</p></article></div>
+      </section>
+
+      <section class="view" id="reviewerView">
+        <div class="view-intro"><div><p class="eyebrow accent">YOUR STUDY GUIDE</p><h2>Reviewer</h2><p class="muted" id="reviewerSubtitle">Upload and analyze a PDF to create your reviewer.</p></div><button class="secondary-button" id="reviewAllButton">Mark all reviewed</button></div>
+        <div class="toolbar"><div class="search-box"><span>⌕</span><input id="reviewSearch" type="search" placeholder="Search reviewer content..."></div><select id="topicFilter"><option value="all">All sections</option></select></div>
+        <div class="review-progress"><div><span>Study progress</span><strong id="reviewProgressText">0%</strong></div><div class="progress-track"><span id="reviewProgressBar"></span></div></div>
+        <div id="reviewerContent" class="reviewer-content"><div class="empty-state"><span>▤</span><h3>Your reviewer will appear here</h3><p>Upload a PDF from the dashboard, then return to this page.</p></div></div>
+      </section>
+
+      <section class="view" id="examView">
+        <div class="view-intro"><div><p class="eyebrow accent">TEST YOUR RECALL</p><h2>Mock Exam</h2><p class="muted">Every question and choice is derived from your uploaded PDF.</p></div><button class="secondary-button" id="examSettingsButton">Exam settings</button></div>
+        <div id="examSetup" class="exam-setup card-panel"><div class="setup-icon">✎</div><h3>Build a mock exam</h3><p>Choose how many questions you want to practice. Questions are generated from verified facts in the extracted text.</p><div class="setup-controls"><label>Number of questions<select id="questionCount"><option value="10">10</option><option value="20">20</option><option value="30">30</option><option value="50">50</option><option value="all">All possible questions</option></select></label><label class="check-label"><input type="checkbox" id="shuffleQuestions" checked> Shuffle questions</label><label class="check-label"><input type="checkbox" id="shuffleChoices" checked> Shuffle choices</label></div><button class="primary-button" id="buildExamButton">Create exam <span>→</span></button><p class="small muted" id="questionAvailability"></p></div>
+        <div id="examWorkspace" class="hidden"></div>
+      </section>
+
+      <section class="view" id="resultsView"><div class="view-intro"><div><p class="eyebrow accent">LEARN FROM YOUR MISTAKES</p><h2>Results</h2><p class="muted">Review your latest mock exam attempt.</p></div></div><div id="resultsContent" class="results-content"><div class="empty-state"><span>◉</span><h3>No exam results yet</h3><p>Complete a mock exam to see your score and explanations.</p></div></div></section>
+
+      <section class="view" id="downloadsView"><div class="view-intro"><div><p class="eyebrow accent">TAKE IT WITH YOU</p><h2>Downloads</h2><p class="muted">Export a clean study packet from the current document.</p></div></div><div class="download-grid"><article class="download-card"><span class="download-symbol">▤</span><h3>Reviewer PDF</h3><p>Organized topics, definitions, key concepts, dates, names, and facts.</p><button class="secondary-button" id="downloadReviewer">Download reviewer <span>⇩</span></button></article><article class="download-card"><span class="download-symbol">✓</span><h3>Mock Exam PDF</h3><p>Printable questions and a blank answer sheet, without revealing answers.</p><button class="secondary-button" id="downloadMock">Download mock exam <span>⇩</span></button></article><article class="download-card"><span class="download-symbol">≡</span><h3>Answer Key</h3><p>A separate answer key for checking a printed exam.</p><button class="secondary-button" id="downloadKey">Download answer key <span>⇩</span></button></article></div><div class="privacy-note"><strong>Private by design</strong><span>PDF text is processed in your browser. No upload server or AI API is required for this version.</span></div></section>
+
+      <section class="view" id="settingsView"><div class="view-intro"><div><p class="eyebrow accent">MAKE IT YOURS</p><h2>Settings</h2><p class="muted">Control preferences and reset local study data.</p></div></div><div class="settings-panel card-panel"><div class="setting-row"><div><strong>Dark mode</strong><p>Use a darker color palette for evening study sessions.</p></div><label class="switch"><input type="checkbox" id="darkModeSetting"><span></span></label></div><div class="setting-row"><div><strong>Local data</strong><p>Reviewer progress, settings, and the last score are saved in localStorage.</p></div><button class="danger-button" id="clearData">Clear current data</button></div><div class="about-box"><strong>About extraction</strong><p>PDF Study Hub uses PDF.js to extract selectable text and deterministic rules to identify study-worthy lines. Scanned image-only PDFs may need OCR and are not silently interpreted.</p></div></div></section>
+    </main>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
